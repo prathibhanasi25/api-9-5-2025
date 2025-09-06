@@ -294,58 +294,93 @@ export default function UserManagement() {
         </Container>
 
         {/* Add/Edit Dialog */}
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>{isEditMode ? "Edit User" : "Add User"}</DialogTitle>
-          <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <TextField
-              name="firstName"
-              label="First Name"
-              value={newUser.firstName}
-              onChange={handleInputChange}
-              required
-              size="small"
-            />
-            <TextField
-              name="lastName"
-              label="Last Name"
-              value={newUser.lastName}
-              onChange={handleInputChange}
-              required
-              size="small"
-            />
-            <TextField
-              name="email"
-              label="Email"
-              value={newUser.email}
-              onChange={handleInputChange}
-              size="small"
-              required
-              InputProps={{ readOnly: isEditMode }}
-            />
-            <FormControl size="small">
-              <Select name="roleId" value={newUser.roleId} onChange={handleInputChange} displayEmpty required>
-                <MenuItem value="" disabled>Select Role</MenuItem>
-                {roles.map((r) => (
-                  <MenuItem key={r.id} value={r.id}  disabled={r.type === "User"}>
-                    {r.type}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl size="small">
-              <Select name="status" value={newUser.status} onChange={handleInputChange}>
-                <MenuItem value="Active">Active</MenuItem>
-                <MenuItem value="Inactive">Inactive</MenuItem>
-              </Select>
-            </FormControl>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button variant="contained" onClick={handleAddUser}>
-              {isEditMode ? "Update" : "Save"}
-            </Button>
-          </DialogActions>
-        </Dialog>
+        {/* Add/Edit Dialog */}
+<Dialog
+  open={open}
+  onClose={handleClose}
+  fullWidth
+  maxWidth="xs"
+  PaperProps={{
+    component: "form", // ✅ enables HTML5 form validation
+    onSubmit: (e) => {
+      e.preventDefault();
+      handleAddUser(); // runs only if inputs pass HTML5 validation
+    },
+    sx: { borderRadius: 3, boxShadow: 6 },
+  }}
+>
+  <DialogTitle>{isEditMode ? "Edit User" : "Add User"}</DialogTitle>
+
+  <DialogContent
+    sx={{
+      display: "flex",
+      flexDirection: "column",
+      gap: 1.5,
+    }}
+  >
+    <TextField
+      name="firstName"
+      label="First Name"
+      value={newUser.firstName}
+      onChange={handleInputChange}
+      required
+      size="small"
+    />
+    <TextField
+      name="lastName"
+      label="Last Name"
+      value={newUser.lastName}
+      onChange={handleInputChange}
+      required
+      size="small"
+    />
+    <TextField
+      name="email"
+      label="Email"
+      type="email" // ✅ HTML email validation
+      value={newUser.email}
+      onChange={handleInputChange}
+      required
+      size="small"
+      InputProps={{ readOnly: isEditMode }}
+    />
+
+    <FormControl size="small" required>
+      <Select
+        name="roleId"
+        value={newUser.roleId}
+        onChange={handleInputChange}
+        displayEmpty
+      >
+        <MenuItem value="" disabled>Select Role</MenuItem>
+        {roles.map((r) => (
+          <MenuItem key={r.id} value={r.id}>
+            {r.type}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+
+    <FormControl size="small" required>
+      <Select
+        name="status"
+        value={newUser.status}
+        onChange={handleInputChange}
+      >
+        <MenuItem value="Active">Active</MenuItem>
+        <MenuItem value="Inactive">Inactive</MenuItem>
+      </Select>
+    </FormControl>
+  </DialogContent>
+
+  <DialogActions>
+    <Button onClick={handleClose}>Cancel</Button>
+    <Button variant="contained" type="submit">
+      {isEditMode ? "Update" : "Save"}
+    </Button>
+  </DialogActions>
+</Dialog>
+
 
         {/* Delete Dialog */}
         <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
